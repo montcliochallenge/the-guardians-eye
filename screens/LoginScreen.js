@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -15,28 +13,9 @@ export default function LoginScreen({ navigation }) {
     const [username, setUsername] = useState('');
     const [senha, setSenha] = useState('');
 
-    useEffect(() => {
-        const carregarUsername = async () => {
-            try {
-                const savedUsername = await AsyncStorage.getItem('username');
-                if (savedUsername) {
-                    setUsername(savedUsername);
-                }
-            } catch (error) {
-                console.log('Erro ao carregar username:', error);
-            }
-        };
-        carregarUsername();
-    }, []);
-
-    const handleLogin = async () => {
-        try {
-            await AsyncStorage.setItem('username', username);
-            console.log('Username:', username, 'Senha:', senha);
-            navigation.navigate('Home');
-        } catch (error) {
-            console.log('Erro ao salvar username:', error);
-        }
+    const handleLogin = () => {
+        console.log('Username:', username, 'Senha:', senha);
+        navigation.navigate('Home');
     };
 
     return (
@@ -54,6 +33,7 @@ export default function LoginScreen({ navigation }) {
                     value={username}
                     onChangeText={setUsername}
                     autoCapitalize="none"
+                    placeholderTextColor="#999"
                 />
             </View>
 
@@ -65,6 +45,7 @@ export default function LoginScreen({ navigation }) {
                     value={senha}
                     onChangeText={setSenha}
                     secureTextEntry
+                    placeholderTextColor="#999"
                 />
             </View>
 
@@ -75,8 +56,6 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                 <Text style={styles.link}>Criar conta</Text>
             </TouchableOpacity>
-
-
         </View>
     );
 }
@@ -86,20 +65,20 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#273A28',
+        backgroundColor: '#141A1F',
         paddingHorizontal: 24,
     },
     avatar: {
-        width: 100,
-        height: 100,
+        width: 120,
+        height: 120,
         marginBottom: 32,
         borderRadius: 50,
     },
     inputContainer: {
+        backgroundColor: '#2B3640',
+        borderColor: '#2B3640',
         flexDirection: 'row',
         alignItems: 'center',
-        color: '#fff',
-        borderColor: '#ccc',
         borderWidth: 1,
         borderRadius: 8,
         marginBottom: 16,
@@ -112,10 +91,10 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         paddingVertical: 12,
-        color: '#fff'
+        color: '#fff',
     },
     button: {
-        backgroundColor: '#000',
+        backgroundColor: '#DBE8F2',
         padding: 14,
         borderRadius: 8,
         alignItems: 'center',
@@ -123,7 +102,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     buttonText: {
-        color: '#fff',
+        color: '#141A1F',
         fontSize: 16,
     },
     link: {
