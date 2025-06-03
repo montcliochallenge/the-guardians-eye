@@ -13,10 +13,10 @@ export default function SplashScreen({ navigation }) {
     return (
         <View style={styles.container}>
             <Image
-                source={require('../assets/icon.png')}
+                source={require('../assets/user.png')}
                 style={styles.logo}
             />
-            <Text style={styles.title}>THE GUARDIANS'S EYE</Text>
+            <Text style={styles.title}>THE GUARDIAN'S EYE</Text>
         </View>
     );
 }
@@ -24,7 +24,7 @@ export default function SplashScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#152016',
+        backgroundColor: '#141A1F',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     title: {
-        fontSize: 32,
+        fontSize: 30,
         color: '#fff',
         fontWeight: 'bold',
     },
