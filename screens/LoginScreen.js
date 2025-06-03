@@ -14,9 +14,12 @@ export default function LoginScreen({ navigation }) {
     const [senha, setSenha] = useState('');
 
     const handleLogin = () => {
-        console.log('Username:', username, 'Senha:', senha);
-        navigation.navigate('Home');
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'MainTabs' }],
+        });
     };
+
 
     return (
         <View style={styles.container}>
