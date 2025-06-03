@@ -148,10 +148,10 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     title: {
-        fontSize: 40,
+        fontSize: 45,
         fontWeight: 'bold',
         color: '#fff',
-        marginBottom: 60,
+        marginBottom: 35,
         alignSelf: 'center',
         marginTop: 100,
     },
@@ -167,11 +167,11 @@ const styles = StyleSheet.create({
         height: 44,
     },
     button: {
-        backgroundColor: '#000',
+        backgroundColor: '#DBE8F2',
         padding: 14,
         borderRadius: 8,
         alignItems: 'center',
-        marginTop: 4,
+        marginTop: 15,
     },
     icon: {
         marginRight: 8,
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
         height: 44,
     },
     buttonText: {
-        color: '#fff',
+        color: '#000',
         fontSize: 16,
     },
     link: {
