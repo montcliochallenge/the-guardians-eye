@@ -10,6 +10,8 @@ Dependências baixadas pós inicialização:
 	npm install react-native-chart-kit
 	npm install react-native-svg
 	npm install @react-navigation/bottom-tabs
+	npm install @react-navigation/drawer
+
 
 
 
