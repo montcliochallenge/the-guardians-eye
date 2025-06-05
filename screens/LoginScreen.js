@@ -16,7 +16,7 @@ export default function LoginScreen({ navigation }) {
     const handleLogin = () => {
         navigation.reset({
             index: 0,
-            routes: [{ name: 'MainTabs' }],
+            routes: [{ name: 'Main' }],
         });
     };
 
