@@ -1,8 +1,8 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import MainTabs from './MainTabs';
-import SettingsScreen from '../screens/SettingsScreen';
 import AboutScreen from '../screens/AboutScreen';
+import HelpCenterScreen from '../screens/HelpCenterScreen';
 import LogoutScreen from '../components/LogoutScreen'
 import { View, Text, TouchableOpacity } from 'react-native';
 
@@ -27,9 +27,12 @@ export default function DrawerNavigator({ navigation }) {
             }}
         >
             <Drawer.Screen name="Início" component={MainTabs} />
-            <Drawer.Screen name="Configurações" component={SettingsScreen} />
             <Drawer.Screen name="Sobre o App" component={AboutScreen} />
-            <Drawer.Screen name="Sair da Conta" component={LogoutScreen}
+            <Drawer.Screen name="Sair da Conta" component={LogoutScreen} />
+            <Drawer.Screen name="HelpCenter" component={HelpCenterScreen}
+                options={{
+                    drawerItemStyle: { display: 'none' } // oculta da gaveta
+                }}
             />
         </Drawer.Navigator>
     );
