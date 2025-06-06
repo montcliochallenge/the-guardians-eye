@@ -1,19 +1,27 @@
 import React, { useState } from 'react';
 import {
-    View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    Alert,
+    ScrollView
 } from 'react-native';
 import { FontAwesome, Feather } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
 
 export default function RegisterScreen({ navigation }) {
     const [nome, setNome] = useState('');
     const [sobrenome, setSobrenome] = useState('');
     const [cpf, setCpf] = useState('');
-    const [cargo, setCargo] = useState('ADM');
+    const [cargo, setCargo] = useState('ADM'); // fixo, pode virar dropdown futuramente
     const [funcao, setFuncao] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
 
+    const API_URL = 'http://192.168.1.32:5193/api/usuario';
+
+    // Validações simples
     const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const validateCPF = (cpf) => /^\d{11}$/.test(cpf.replace(/[.\-]/g, ''));
     const validateNome = (nome) => nome.trim().length >= 2;
@@ -21,113 +29,99 @@ export default function RegisterScreen({ navigation }) {
     const validateSenha = (senha) => senha.length >= 6;
     const validateFuncao = (funcao) => funcao.trim().length > 0;
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         if (!validateNome(nome)) {
-            Alert.alert('Erro', 'Nome deve ter pelo menos 2 caracteres.');
-            return;
+            return Alert.alert('Erro', 'Nome deve ter pelo menos 2 caracteres.');
         }
         if (!validateSobrenome(sobrenome)) {
-            Alert.alert('Erro', 'Sobrenome deve ter pelo menos 2 caracteres.');
-            return;
+            return Alert.alert('Erro', 'Sobrenome deve ter pelo menos 2 caracteres.');
         }
         if (!validateCPF(cpf)) {
-            Alert.alert('Erro', 'CPF deve conter 11 números.');
-            return;
+            return Alert.alert('Erro', 'CPF deve conter 11 números.');
         }
         if (!validateFuncao(funcao)) {
-            Alert.alert('Erro', 'Informe a função.');
-            return;
+            return Alert.alert('Erro', 'Informe a função.');
         }
         if (!validateEmail(email)) {
-            Alert.alert('Erro', 'Email inválido.');
-            return;
+            return Alert.alert('Erro', 'Email inválido.');
         }
         if (!validateSenha(senha)) {
-            Alert.alert('Erro', 'Senha deve ter pelo menos 6 caracteres.');
-            return;
+            return Alert.alert('Erro', 'Senha deve ter pelo menos 6 caracteres.');
         }
 
-        Alert.alert('Sucesso', 'Cadastro realizado!');
-        navigation.navigate('Login');
+        const usuario = { nome, sobrenome, cpf, cargo, funcao, email, senha };
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(usuario),
+            });
+
+            if (response.ok) {
+                Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+                navigation.navigate('Login');
+            } else {
+                const errorData = await response.json();
+                console.error('Erro no cadastro:', errorData);
+                Alert.alert('Erro', 'Erro ao realizar cadastro.');
+            }
+        } catch (error) {
+            console.error('Erro na requisição:', error);
+            Alert.alert('Erro', 'Erro ao conectar com o servidor.');
+        }
     };
 
     return (
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
             <Text style={styles.title}>Cadastro</Text>
 
-            <View style={styles.inputContainer}>
-                <FontAwesome name="user" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Nome"
-                    placeholderTextColor="#999"
-                    value={nome}
-                    onChangeText={setNome}
-                    autoCapitalize="words"
-                />
-            </View>
+            <Input
+                icon={<FontAwesome name="user" size={20} color="#666" />}
+                placeholder="Nome"
+                value={nome}
+                onChangeText={setNome}
+            />
 
-            <View style={styles.inputContainer}>
-                <FontAwesome name="user" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Sobrenome"
-                    placeholderTextColor="#999"
-                    value={sobrenome}
-                    onChangeText={setSobrenome}
-                    autoCapitalize="words"
-                />
-            </View>
+            <Input
+                icon={<FontAwesome name="user" size={20} color="#666" />}
+                placeholder="Sobrenome"
+                value={sobrenome}
+                onChangeText={setSobrenome}
+            />
 
-            <View style={styles.inputContainer}>
-                <FontAwesome name="id-card" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="CPF (somente números)"
-                    placeholderTextColor="#999"
-                    value={cpf}
-                    onChangeText={setCpf}
-                    keyboardType="numeric"
-                    maxLength={11}
-                />
-            </View>
+            <Input
+                icon={<FontAwesome name="id-card" size={20} color="#666" />}
+                placeholder="CPF (somente números)"
+                value={cpf}
+                onChangeText={setCpf}
+                keyboardType="numeric"
+                maxLength={11}
+            />
 
-            <View style={styles.inputContainer}>
-                <Feather name="briefcase" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Função"
-                    placeholderTextColor="#999"
-                    value={funcao}
-                    onChangeText={setFuncao}
-                    autoCapitalize="words"
-                />
-            </View>
+            <Input
+                icon={<Feather name="briefcase" size={20} color="#666" />}
+                placeholder="Função"
+                value={funcao}
+                onChangeText={setFuncao}
+            />
 
-            <View style={styles.inputContainer}>
-                <Feather name="mail" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    placeholderTextColor="#999"
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-            </View>
+            <Input
+                icon={<Feather name="mail" size={20} color="#666" />}
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+            />
 
-            <View style={styles.inputContainer}>
-                <FontAwesome name="lock" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Senha"
-                    placeholderTextColor="#999"
-                    value={senha}
-                    onChangeText={setSenha}
-                    secureTextEntry
-                />
-            </View>
+            <Input
+                icon={<FontAwesome name="lock" size={20} color="#666" />}
+                placeholder="Senha"
+                value={senha}
+                onChangeText={setSenha}
+                secureTextEntry
+            />
 
             <TouchableOpacity style={styles.button} onPress={handleRegister}>
                 <Text style={styles.buttonText}>Cadastrar</Text>
@@ -137,6 +131,21 @@ export default function RegisterScreen({ navigation }) {
                 <Text style={styles.link}>Já tenho conta</Text>
             </TouchableOpacity>
         </ScrollView>
+    );
+}
+
+// Componente reutilizável de input
+function Input({ icon, ...props }) {
+    return (
+        <View style={styles.inputContainer}>
+            {icon}
+            <TextInput
+                style={styles.input}
+                placeholderTextColor="#999"
+                autoCapitalize="words"
+                {...props}
+            />
+        </View>
     );
 }
 
@@ -162,16 +171,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
         borderRadius: 8,
-        marginBottom: 8,
+        marginBottom: 12,
         paddingHorizontal: 10,
         height: 44,
-    },
-    button: {
-        backgroundColor: '#DBE8F2',
-        padding: 14,
-        borderRadius: 8,
-        alignItems: 'center',
-        marginTop: 15,
     },
     icon: {
         marginRight: 8,
@@ -181,13 +183,21 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 44,
     },
+    button: {
+        backgroundColor: '#DBE8F2',
+        padding: 14,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 20,
+    },
     buttonText: {
         color: '#000',
         fontSize: 16,
+        fontWeight: 'bold',
     },
     link: {
         color: '#A5A5A5',
         textAlign: 'center',
-        marginTop: 16,
+        marginTop: 20,
     },
 });
