@@ -1,42 +1,70 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 
-export default function ProfileScreen() {
-    const handleLogout = () => {
-        Alert.alert('Logout', 'Função de logout ainda não implementada.');
-    };
+export default function SettingsScreen() {
+    const navigation = useNavigation();
 
     const handleEditProfile = () => {
         Alert.alert('Editar Perfil', 'Função de editar perfil ainda não implementada.');
     };
 
+    const handleDeleteAccount = () => {
+        Alert.alert('Excluir Conta', 'Tem certeza que deseja excluir sua conta?', [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Excluir', style: 'destructive', onPress: () => console.log('Conta excluída') },
+        ]);
+    };
+
+    const handleHelpCenter = () => {
+        navigation.navigate('HelpCenter');
+    };
+
+    const handleContactUs = () => {
+        Alert.alert('Fale Conosco', 'Email: montclio@gmail.com');
+    };
+
     return (
         <View style={styles.container}>
-            <Image
-                source={require('../assets/user.png')}
-                style={styles.avatar}
-            />
 
-            <Text style={styles.name}>User name</Text>
-            <Text style={styles.username}>@username</Text>
+            {/* Foto e nome do perfil */}
+            <View style={styles.profileContainer}>
+                <Image source={require('../assets/user1.png')} style={styles.profileImage} />
+                <Text style={styles.profileName}>Nome usuário</Text>
+            </View>
 
-            <Text style={styles.email}>user.name@gmail.com</Text>
 
-            <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
-                <Text style={styles.buttonText}>Editar Perfil</Text>
+            <TouchableOpacity style={styles.item} onPress={handleEditProfile}>
+                <View style={styles.itemContent}>
+                    <Icon name="edit" size={24} color="#4CAF50" />
+                    <Text style={styles.itemText}>Editar Perfil</Text>
+                </View>
             </TouchableOpacity>
 
-            <View style={styles.infoBox}>
-                <Text style={styles.infoTitle}>Telefone</Text>
-                <Text style={styles.infoText}>+55 11 99999-9999</Text>
-            </View>
-            <View style={styles.infoBox}>
-                <Text style={styles.infoTitle}>Zona de Atuação</Text>
-                <Text style={styles.infoText}>Zona Combustão 1</Text>
-            </View>
+            <TouchableOpacity style={styles.item} onPress={handleDeleteAccount}>
+                <View style={styles.itemContent}>
+                    <Icon name="delete" size={24} color="#E53935" />
+                    <Text style={[styles.itemText, { color: '#E53935' }]}>Excluir Conta</Text>
+                </View>
+            </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
-                <Text style={[styles.buttonText, styles.logoutButtonText]}>Sair</Text>
+            <View style={styles.divider} />
+
+            <Text style={styles.sectionTitle}>Suporte</Text>
+
+            <TouchableOpacity style={styles.item} onPress={handleHelpCenter}>
+                <View style={styles.itemContent}>
+                    <Icon name="help-outline" size={24} color="#fff" />
+                    <Text style={styles.itemText}>Central de Ajuda</Text>
+                </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.item} onPress={handleContactUs}>
+                <View style={styles.itemContent}>
+                    <Icon name="email" size={24} color="#fff" />
+                    <Text style={styles.itemText}>Fale Conosco</Text>
+                </View>
             </TouchableOpacity>
         </View>
     );
@@ -45,65 +73,58 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#273A28',
+        backgroundColor: '#0D1B2A',
         padding: 24,
+    },
+    profileContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    profileImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50, // círculo
+        borderWidth: 2,
+        borderColor: '#4CAF50',
+    },
+    profileName: {
+        marginTop: 8,
+        fontSize: 20,
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+    header: {
+        fontSize: 24,
+        color: '#fff',
+        fontWeight: 'bold',
+        marginBottom: 24,
+        textAlign: 'center',
+    },
+    item: {
+        paddingVertical: 14,
+        borderBottomWidth: 1,
+        borderBottomColor: '#263648',
+    },
+    itemContent: {
+        flexDirection: 'row',
         alignItems: 'center',
     },
-    avatar: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        marginBottom: 20,
-    },
-    name: {
-        fontSize: 26,
-        fontWeight: 'bold',
+    itemText: {
+        fontSize: 16,
         color: '#fff',
+        marginLeft: 12,
     },
-    username: {
+    sectionTitle: {
         fontSize: 18,
         color: '#A5A5A5',
-        marginBottom: 8,
+        marginTop: 30,
+        marginBottom: 12,
+        fontWeight: '600',
     },
-    email: {
-        fontSize: 16,
-        color: '#fff',
-        marginBottom: 24,
-    },
-    button: {
-        backgroundColor: '#4CAF50',
-        paddingVertical: 12,
-        paddingHorizontal: 40,
-        borderRadius: 8,
-        marginVertical: 10,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-    infoBox: {
-        width: '100%',
-        backgroundColor: '#364732',
-        borderRadius: 8,
-        padding: 16,
-        marginVertical: 6,
-    },
-    infoTitle: {
-        color: '#A5A5A5',
-        fontSize: 14,
-        marginBottom: 4,
-    },
-    infoText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-    logoutButton: {
-        backgroundColor: '#9E1B1B',
-        marginTop: 40,
-        width: '100%',
-    },
-    logoutButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
+    divider: {
+        height: 1,
+        backgroundColor: '#263648',
+        marginVertical: 24,
     },
 });
