@@ -4,7 +4,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import LoginScreen from './screens/LoginScreen';
 import SplashScreen from './screens/SplashScreen';
-import MainTabs from './navigator/MainTabs';
 import DrawerNavigator from './navigator/DrawerNavigator';
 
 
