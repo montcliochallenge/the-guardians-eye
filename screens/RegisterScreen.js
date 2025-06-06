@@ -19,6 +19,7 @@ export default function RegisterScreen({ navigation }) {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
 
+
     const API_URL = 'http://192.168.1.32:5193/api/usuario';
 
     // Validações simples
@@ -29,48 +30,80 @@ export default function RegisterScreen({ navigation }) {
     const validateSenha = (senha) => senha.length >= 6;
     const validateFuncao = (funcao) => funcao.trim().length > 0;
 
-    const handleRegister = async () => {
-        if (!validateNome(nome)) {
-            return Alert.alert('Erro', 'Nome deve ter pelo menos 2 caracteres.');
-        }
-        if (!validateSobrenome(sobrenome)) {
-            return Alert.alert('Erro', 'Sobrenome deve ter pelo menos 2 caracteres.');
-        }
-        if (!validateCPF(cpf)) {
-            return Alert.alert('Erro', 'CPF deve conter 11 números.');
-        }
-        if (!validateFuncao(funcao)) {
-            return Alert.alert('Erro', 'Informe a função.');
-        }
-        if (!validateEmail(email)) {
-            return Alert.alert('Erro', 'Email inválido.');
-        }
-        if (!validateSenha(senha)) {
-            return Alert.alert('Erro', 'Senha deve ter pelo menos 6 caracteres.');
-        }
+const handleRegister = async () => {
+    // Tratamento de dados
+    const nomeTratado = nome.trim();
+    const sobrenomeTratado = sobrenome.trim();
+    const cpfTratado = cpf.replace(/\D/g, '').trim();
+    const cargoTratado = cargo.trim();
+    const funcaoTratada = funcao.trim();
+    const emailTratado = email.trim().toLowerCase();
+    const senhaTratada = senha.trim();
 
-        const usuario = { nome, sobrenome, cpf, cargo, funcao, email, senha };
+    // Validações com os dados tratados
+    if (!validateNome(nomeTratado)) {
+        return Alert.alert('Erro', 'Nome deve ter pelo menos 2 caracteres.');
+    }
+    if (!validateSobrenome(sobrenomeTratado)) {
+        return Alert.alert('Erro', 'Sobrenome deve ter pelo menos 2 caracteres.');
+    }
+    if (!validateCPF(cpfTratado)) {
+        return Alert.alert('Erro', 'CPF deve conter 11 números.');
+    }
+    if (!validateFuncao(funcaoTratada)) {
+        return Alert.alert('Erro', 'Informe a função.');
+    }
+    if (!validateEmail(emailTratado)) {
+        return Alert.alert('Erro', 'Email inválido.');
+    }
+    if (!validateSenha(senhaTratada)) {
+        return Alert.alert('Erro', 'Senha deve ter pelo menos 6 caracteres.');
+    }
 
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(usuario),
-            });
-
-            if (response.ok) {
-                Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-                navigation.navigate('Login');
-            } else {
-                const errorData = await response.json();
-                console.error('Erro no cadastro:', errorData);
-                Alert.alert('Erro', 'Erro ao realizar cadastro.');
-            }
-        } catch (error) {
-            console.error('Erro na requisição:', error);
-            Alert.alert('Erro', 'Erro ao conectar com o servidor.');
-        }
+    const usuario = {
+        nome: nomeTratado,
+        sobrenome: sobrenomeTratado,
+        cpf: cpfTratado,
+        cargo: cargoTratado,
+        funcao: funcaoTratada,
+        email: emailTratado,
+        senha: senhaTratada,
     };
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(usuario),
+        });
+
+        if (response.ok) {
+            Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+            navigation.navigate('Login');
+        } else {
+            let mensagemErro = 'Erro ao realizar cadastro.';
+            try {
+                const texto = await response.text();
+                mensagemErro = texto || mensagemErro;
+                console.error('Erro no cadastro:', texto);
+            } catch (err) {
+                console.error('Erro ao ler resposta como texto:', err);
+            }
+            Alert.alert('Erro', mensagemErro);
+        }
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+
+        const mensagemErro =
+            error?.message?.includes('Network') ?
+                'Não foi possível conectar ao servidor. Verifique sua internet.' :
+                'Erro inesperado.';
+
+        Alert.alert('Erro', mensagemErro);
+    }
+};
+
+
 
     return (
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
@@ -98,6 +131,7 @@ export default function RegisterScreen({ navigation }) {
                 keyboardType="numeric"
                 maxLength={11}
             />
+
 
             <Input
                 icon={<Feather name="briefcase" size={20} color="#666" />}
