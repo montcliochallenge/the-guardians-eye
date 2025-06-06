@@ -12,7 +12,7 @@ export default function AboutScreen() {
 
             <Text style={styles.title}>Sobre Nós</Text>
             <Text style={styles.paragraph}>
-                Na [Nome da Startup], nossa missão é capacitar indivíduos e comunidades a monitorar
+                Na MontClio, nossa missão é capacitar indivíduos e comunidades a monitorar
                 e mitigar riscos ambientais de forma proativa. Acreditamos que o conhecimento é a
                 chave para a sustentabilidade e nos esforçamos para fornecer ferramentas acessíveis
                 e precisas para a avaliação de riscos.
@@ -23,7 +23,7 @@ export default function AboutScreen() {
             <View style={styles.teamMember}>
                 <Image source={require('../assets/user1.png')} style={styles.avatar} />
                 <View style={styles.memberInfo}>
-                    <Text style={styles.memberName}>João Silva</Text>
+                    <Text style={styles.memberName}>Pedro Lima</Text>
                     <Text style={styles.memberRole}>Desenvolvedor Fullstack</Text>
                 </View>
             </View>
@@ -31,23 +31,23 @@ export default function AboutScreen() {
             <View style={styles.teamMember}>
                 <Image source={require('../assets/user1.png')} style={styles.avatar} />
                 <View style={styles.memberInfo}>
-                    <Text style={styles.memberName}>Maria Oliveira</Text>
-                    <Text style={styles.memberRole}>Especialista em Dados Climáticos</Text>
+                    <Text style={styles.memberName}>Vitor Gomes</Text>
+                    <Text style={styles.memberRole}>Desenvolvedor Fullstack</Text>
                 </View>
             </View>
 
             <View style={styles.teamMember}>
                 <Image source={require('../assets/user1.png')} style={styles.avatar} />
                 <View style={styles.memberInfo}>
-                    <Text style={styles.memberName}>Carlos Mendes</Text>
-                    <Text style={styles.memberRole}>Designer UX/UI</Text>
+                    <Text style={styles.memberName}>Leonardo Pimentel</Text>
+                    <Text style={styles.memberRole}>Desenvolvedor Fullstack</Text>
                 </View>
             </View>
 
             <Text style={styles.title}>Contato</Text>
             <Text style={styles.paragraph}>
                 Para dúvidas, sugestões ou parcerias, entre em contato conosco:{"\n"}
-                <Text style={styles.email}>contato@nomedaempresa.com</Text>
+                <Text style={styles.email}>montclio@gmail.com</Text>
             </Text>
         </ScrollView>
     );
@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         marginBottom: 20,
+        textAlign: 'justify',
     },
     teamMember: {
         flexDirection: 'row',
