@@ -28,6 +28,7 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             <Button title="Ir para Relatórios" onPress={() => navigation.navigate('Report')} />
+
         </View>
     );
 }
