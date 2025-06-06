@@ -1,0 +1,18 @@
+Comando utilizado para criar o projeto:
+npx create-expo-app@latest -t
+	Blank
+
+Dependências baixadas pós inicialização:
+	npm install @react-navigation/Native
+	npx expo install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
+	npm install @react-navigation/native-stack
+	npm install @react-native-picker/picker
+	npm install react-native-chart-kit
+	npm install react-native-svg
+	npm install @react-navigation/bottom-tabs
+	npm install @react-navigation/drawer
+
+
+
+
+
