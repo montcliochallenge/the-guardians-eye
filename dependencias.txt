@@ -12,6 +12,7 @@ Dependências baixadas pós inicialização:
 	npm install @react-navigation/bottom-tabs
 	npm install @react-navigation/drawer
 	npm install @react-native-async-storage/async-storage
+	npx expo install react-native-maps
 
 
 
