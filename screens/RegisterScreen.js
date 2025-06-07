@@ -20,7 +20,7 @@ export default function RegisterScreen({ navigation }) {
     const [senha, setSenha] = useState('');
 
 
-    const API_URL = 'http://192.168.1.32:5193/api/usuario';
+    const API_URL = 'http://localhost:5193/api/usuario';
 
     // Validações simples
     const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);

@@ -16,7 +16,7 @@ export default function LoginScreen({ navigation }) {
     const [senha, setSenha] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const API_URL = 'http://192.168.1.32:5193/api/auth/login';
+    const API_URL = 'http://localhost:5193/api/auth/login';
 
  const handleLogin = async () => {
     setLoading(true);
