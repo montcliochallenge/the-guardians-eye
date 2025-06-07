@@ -168,7 +168,6 @@ const handleRegister = async () => {
     );
 }
 
-// Componente reutilizável de input
 function Input({ icon, ...props }) {
     return (
         <View style={styles.inputContainer}>
