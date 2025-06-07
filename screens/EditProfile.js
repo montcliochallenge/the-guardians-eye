@@ -67,7 +67,7 @@ const handleUpdateProfile = async () => {
 
     if (response.ok) {
       Alert.alert('Sucesso', 'Perfil atualizado com sucesso!');
-      navigation.goBack(); //Volta para a tela de perfil
+      navigation.goBack(); 
     } else {
       const errorData = await response.json();
       console.error('Erro na atualização:', errorData);
