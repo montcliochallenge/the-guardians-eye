@@ -85,8 +85,8 @@ Siga os passos abaixo para executar o projeto localmente:
 
 ### 1. Clone o repositório:
 ```bash
-git clone <url-do-repositório>
-cd <nome-do-projeto>
+git clone https://github.com/montcliochallenge/the-guardians-eye.git
+cd the-guardians-eye
 ```
 
 ###  2. Instale as dependências:
