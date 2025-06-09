@@ -1,19 +1,28 @@
 import React, { useState } from 'react';
 import {
-    View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    Alert,
+    ScrollView
 } from 'react-native';
 import { FontAwesome, Feather } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
 
 export default function RegisterScreen({ navigation }) {
     const [nome, setNome] = useState('');
     const [sobrenome, setSobrenome] = useState('');
     const [cpf, setCpf] = useState('');
-    const [cargo, setCargo] = useState('ADM');
+    const [cargo, setCargo] = useState('ADM'); // fixo, pode virar dropdown futuramente
     const [funcao, setFuncao] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
 
+
+    const API_URL = 'http://192.168.1.32:5193/api/usuario';
+
+    // Validações 
     const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const validateCPF = (cpf) => /^\d{11}$/.test(cpf.replace(/[.\-]/g, ''));
     const validateNome = (nome) => nome.trim().length >= 2;
@@ -21,113 +30,132 @@ export default function RegisterScreen({ navigation }) {
     const validateSenha = (senha) => senha.length >= 6;
     const validateFuncao = (funcao) => funcao.trim().length > 0;
 
-    const handleRegister = () => {
-        if (!validateNome(nome)) {
-            Alert.alert('Erro', 'Nome deve ter pelo menos 2 caracteres.');
-            return;
-        }
-        if (!validateSobrenome(sobrenome)) {
-            Alert.alert('Erro', 'Sobrenome deve ter pelo menos 2 caracteres.');
-            return;
-        }
-        if (!validateCPF(cpf)) {
-            Alert.alert('Erro', 'CPF deve conter 11 números.');
-            return;
-        }
-        if (!validateFuncao(funcao)) {
-            Alert.alert('Erro', 'Informe a função.');
-            return;
-        }
-        if (!validateEmail(email)) {
-            Alert.alert('Erro', 'Email inválido.');
-            return;
-        }
-        if (!validateSenha(senha)) {
-            Alert.alert('Erro', 'Senha deve ter pelo menos 6 caracteres.');
-            return;
-        }
+const handleRegister = async () => {
+    // Tratamento de dados
+    const nomeTratado = nome.trim();
+    const sobrenomeTratado = sobrenome.trim();
+    const cpfTratado = cpf.replace(/\D/g, '').trim();
+    const cargoTratado = cargo.trim();
+    const funcaoTratada = funcao.trim();
+    const emailTratado = email.trim().toLowerCase();
+    const senhaTratada = senha.trim();
 
-        Alert.alert('Sucesso', 'Cadastro realizado!');
-        navigation.navigate('Login');
+    // Validações com os dados tratados
+    if (!validateNome(nomeTratado)) {
+        return Alert.alert('Erro', 'Nome deve ter pelo menos 2 caracteres.');
+    }
+    if (!validateSobrenome(sobrenomeTratado)) {
+        return Alert.alert('Erro', 'Sobrenome deve ter pelo menos 2 caracteres.');
+    }
+    if (!validateCPF(cpfTratado)) {
+        return Alert.alert('Erro', 'CPF deve conter 11 números.');
+    }
+    if (!validateFuncao(funcaoTratada)) {
+        return Alert.alert('Erro', 'Informe a função.');
+    }
+    if (!validateEmail(emailTratado)) {
+        return Alert.alert('Erro', 'Email inválido.');
+    }
+    if (!validateSenha(senhaTratada)) {
+        return Alert.alert('Erro', 'Senha deve ter pelo menos 6 caracteres.');
+    }
+
+    const usuario = {
+        nome: nomeTratado,
+        sobrenome: sobrenomeTratado,
+        cpf: cpfTratado,
+        cargo: cargoTratado,
+        funcao: funcaoTratada,
+        email: emailTratado,
+        senha: senhaTratada,
     };
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(usuario),
+        });
+
+        if (response.ok) {
+            Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+            navigation.navigate('Login');
+        } else {
+            let mensagemErro = 'Erro ao realizar cadastro.';
+            try {
+                const texto = await response.text();
+                mensagemErro = texto || mensagemErro;
+                console.error('Erro no cadastro:', texto);
+            } catch (err) {
+                console.error('Erro ao ler resposta como texto:', err);
+            }
+            Alert.alert('Erro', mensagemErro);
+        }
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+
+        const mensagemErro =
+            error?.message?.includes('Network') ?
+                'Não foi possível conectar ao servidor. Verifique sua internet.' :
+                'Erro inesperado.';
+
+        Alert.alert('Erro', mensagemErro);
+    }
+};
+
+
 
     return (
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
             <Text style={styles.title}>Cadastro</Text>
 
-            <View style={styles.inputContainer}>
-                <FontAwesome name="user" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Nome"
-                    placeholderTextColor="#999"
-                    value={nome}
-                    onChangeText={setNome}
-                    autoCapitalize="words"
-                />
-            </View>
+            <Input
+                icon={<FontAwesome name="user" size={20} color="#666" />}
+                placeholder="Nome"
+                value={nome}
+                onChangeText={setNome}
+            />
 
-            <View style={styles.inputContainer}>
-                <FontAwesome name="user" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Sobrenome"
-                    placeholderTextColor="#999"
-                    value={sobrenome}
-                    onChangeText={setSobrenome}
-                    autoCapitalize="words"
-                />
-            </View>
+            <Input
+                icon={<FontAwesome name="user" size={20} color="#666" />}
+                placeholder="Sobrenome"
+                value={sobrenome}
+                onChangeText={setSobrenome}
+            />
 
-            <View style={styles.inputContainer}>
-                <FontAwesome name="id-card" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="CPF (somente números)"
-                    placeholderTextColor="#999"
-                    value={cpf}
-                    onChangeText={setCpf}
-                    keyboardType="numeric"
-                    maxLength={11}
-                />
-            </View>
+            <Input
+                icon={<FontAwesome name="id-card" size={20} color="#666" />}
+                placeholder="CPF (somente números)"
+                value={cpf}
+                onChangeText={setCpf}
+                keyboardType="numeric"
+                maxLength={11}
+            />
 
-            <View style={styles.inputContainer}>
-                <Feather name="briefcase" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Função"
-                    placeholderTextColor="#999"
-                    value={funcao}
-                    onChangeText={setFuncao}
-                    autoCapitalize="words"
-                />
-            </View>
 
-            <View style={styles.inputContainer}>
-                <Feather name="mail" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    placeholderTextColor="#999"
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-            </View>
+            <Input
+                icon={<Feather name="briefcase" size={20} color="#666" />}
+                placeholder="Função"
+                value={funcao}
+                onChangeText={setFuncao}
+            />
 
-            <View style={styles.inputContainer}>
-                <FontAwesome name="lock" size={20} color="#666" style={styles.icon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Senha"
-                    placeholderTextColor="#999"
-                    value={senha}
-                    onChangeText={setSenha}
-                    secureTextEntry
-                />
-            </View>
+            <Input
+                icon={<Feather name="mail" size={20} color="#666" />}
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+            />
+
+            <Input
+                icon={<FontAwesome name="lock" size={20} color="#666" />}
+                placeholder="Senha"
+                value={senha}
+                onChangeText={setSenha}
+                secureTextEntry
+            />
 
             <TouchableOpacity style={styles.button} onPress={handleRegister}>
                 <Text style={styles.buttonText}>Cadastrar</Text>
@@ -137,6 +165,20 @@ export default function RegisterScreen({ navigation }) {
                 <Text style={styles.link}>Já tenho conta</Text>
             </TouchableOpacity>
         </ScrollView>
+    );
+}
+
+function Input({ icon, ...props }) {
+    return (
+        <View style={styles.inputContainer}>
+            {icon}
+            <TextInput
+                style={styles.input}
+                placeholderTextColor="#999"
+                autoCapitalize="words"
+                {...props}
+            />
+        </View>
     );
 }
 
@@ -162,16 +204,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
         borderRadius: 8,
-        marginBottom: 8,
+        marginBottom: 12,
         paddingHorizontal: 10,
         height: 44,
-    },
-    button: {
-        backgroundColor: '#DBE8F2',
-        padding: 14,
-        borderRadius: 8,
-        alignItems: 'center',
-        marginTop: 15,
     },
     icon: {
         marginRight: 8,
@@ -181,13 +216,21 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 44,
     },
+    button: {
+        backgroundColor: '#DBE8F2',
+        padding: 14,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 20,
+    },
     buttonText: {
         color: '#000',
         fontSize: 16,
+        fontWeight: 'bold',
     },
     link: {
         color: '#A5A5A5',
         textAlign: 'center',
-        marginTop: 16,
+        marginTop: 20,
     },
 });

@@ -6,21 +6,55 @@ import {
     TouchableOpacity,
     StyleSheet,
     Image,
+    Alert,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function LoginScreen({ navigation }) {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleLogin = () => {
+    const API_URL = 'http://192.168.1.32:5193/api/auth/login';
+
+ const handleLogin = async () => {
+    setLoading(true);
+    try {
+        const emailTratado = email.trim().toLowerCase();
+        const senhaTratada = senha.trim();
+
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: emailTratado,
+                senha: senhaTratada,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Email ou senha inválidos');
+        }
+
+        const data = await response.json();
+
+        const token = data.token;
+
+        await AsyncStorage.setItem('userToken', token);
+
         navigation.reset({
             index: 0,
             routes: [{ name: 'Main' }],
         });
-    };
-
-
+    } catch (error) {
+        Alert.alert('Erro no login', error.message);
+    } finally {
+        setLoading(false);
+    }
+};
     return (
         <View style={styles.container}>
             <Image
@@ -32,9 +66,9 @@ export default function LoginScreen({ navigation }) {
                 <FontAwesome name="user" size={20} color="#666" style={styles.icon} />
                 <TextInput
                     style={styles.input}
-                    placeholder="Nome de usuário"
-                    value={username}
-                    onChangeText={setUsername}
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
                     autoCapitalize="none"
                     placeholderTextColor="#999"
                 />
