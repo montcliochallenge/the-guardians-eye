@@ -17,7 +17,7 @@ export default function DrawerNavigator({ navigation }) {
     return (
         <Drawer.Navigator
             screenOptions={{
-                headerShown: true,
+                headerShown: false,
                 drawerStyle: {
                     backgroundColor: '#141A1F',
                 },

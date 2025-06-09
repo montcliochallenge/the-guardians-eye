@@ -12,6 +12,8 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SettingItem from "../components/SettingItem";
+import { useFocusEffect } from '@react-navigation/native';
+
 
 //Decodificando o token para obeter o ID do usuario
 function parseJwt(token) {
@@ -43,7 +45,6 @@ export default function SettingsScreen() {
     senha: "",
     fotoUrl: null,
   });
-    const API_URL = `http://localhost:5193/api/usuario/${payload.nameid}`;
 
   const fetchProfile = async () => {
     try {
@@ -63,6 +64,7 @@ export default function SettingsScreen() {
         return;
       }
 
+      const API_URL = `http://192.168.1.32:5193/api/usuario/${payload.nameid}`;
 
       const response = await fetch(API_URL, {
         method: "GET",
@@ -94,9 +96,11 @@ export default function SettingsScreen() {
     }
   };
 
-  useEffect(() => {
+useFocusEffect(
+  React.useCallback(() => {
     fetchProfile();
-  }, []);
+  }, [])
+);
 
   const handleEditProfile = () => {
     navigation.navigate("EditProfile", {
@@ -129,12 +133,14 @@ export default function SettingsScreen() {
               return;
             }
 
+            const API_URL = `http://192.168.1.32:5193/api/usuario/${payload.nameid}`;
+
             const response = await fetch(API_URL, {
               method: "DELETE",
-              headers: {
+                headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
-              },
+                },
             });
 
             if (response.ok) {

@@ -57,13 +57,14 @@ const handleUpdateProfile = async () => {
       senha
     };
 
-    const response = await fetch(`http://localhost:5193/api/usuario/${userId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
+const response = await fetch(`http://192.168.1.32:5193/api/usuario/${userId}`, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`  // <-- Aqui você coloca o token JWT
+  },
+  body: JSON.stringify(body),
+});
 
     if (response.ok) {
       Alert.alert('Sucesso', 'Perfil atualizado com sucesso!');

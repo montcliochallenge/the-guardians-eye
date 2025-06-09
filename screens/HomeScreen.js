@@ -2,35 +2,90 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button, ActivityIndicator } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import IndicatorCard from '../components/IndicatorCard';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 export default function HomeScreen({ navigation }) {
   const [dados, setDados] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchDados = async () => {
-      try {
-        const response = await fetch('http://localhost:5193/api/pessoalocalizada/ultimas-48h');
-        const json = await response.json();
-        
-        const dadosMapeados = json.map(item => ({
-          id: item.id,
-          latitude: item.local.latitude,
-          longitude: item.local.longitude,
-          descNivel: item.impactoClassificacao?.descNivel || 'Desconhecido',
-        }));
+  const [clima, setClima] = useState(null);
 
 
-        setDados(dadosMapeados);
-      } catch (error) {
-        console.error('Erro ao buscar dados:', error);
-      } finally {
-        setLoading(false);
+function parseJwt(token) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    return null;
+  }
+}
+
+
+  
+useEffect(() => {
+  const fetchClima = async () => {
+    try {
+      const apiKey = '70cc0c1697de029a20886485a3eef89a';
+      const cidade = 'Sao Paulo';
+      
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${apiKey}&units=metric&lang=pt_br`
+      );
+      const json = await res.json();
+      setClima(json);
+    } catch (error) {
+      console.error('Erro ao buscar clima:', error);
+    }
+  };
+
+  fetchClima();
+}, []);
+
+useEffect(() => {
+  const fetchDados = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+
+      const response = await fetch('http://192.168.1.32:5193/api/pessoalocalizada/ultimas-48h', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar dados: ${response.status}`);
       }
-    };
 
-    fetchDados();
-  }, []);
+      const json = await response.json();
+
+      const dadosMapeados = json.map(item => ({
+        id: item.id,
+        latitude: item.local.latitude,
+        longitude: item.local.longitude,
+        descNivel: item.impactoClassificacao?.descNivel || 'Desconhecido',
+      }));
+
+      setDados(dadosMapeados);
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchDados();
+}, []);
+
 
 const getMarkerColor = (descNivel) => {
   console.log('descNivel recebido:', descNivel);  // Log do valor original
@@ -82,11 +137,21 @@ const getMarkerColor = (descNivel) => {
         </MapView>
       )}
 
-    <View style={styles.indicators}>
-      <IndicatorCard label="Pluviometria" value="15mm" />
-      <IndicatorCard label="Temperatura" value="28°C" />
-      <IndicatorCard label="Umidade do Solo" value="65%" />
-    </View>
+        <View style={styles.indicators}>
+
+        <IndicatorCard
+            label="Vento"
+            value={clima ? `${clima.wind.speed} m/s` : '...'}
+        />
+        <IndicatorCard
+            label="Temperatura"
+            value={clima ? `${clima.main.temp}°C` : '...'}
+        />
+        <IndicatorCard
+            label="Umidade"
+            value={clima ? `${clima.main.humidity}%` : '...'}
+        />
+        </View>
 
       <Button title="Ir para Relatórios" onPress={() => navigation.navigate('Report')} />
     </View>
