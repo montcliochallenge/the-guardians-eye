@@ -1,4 +1,4 @@
-﻿# 🌍 Sistema Inteligente de Monitoramento e Classificação de Riscos Ambientais
+# 🌍 Sistema Inteligente de Monitoramento e Classificação de Riscos Ambientais
 
 Este projeto tem como objetivo principal oferecer uma solução tecnológica e acessível para detectar, classificar e responder rapidamente a desastres naturais em áreas urbanas, por meio da integração de **IoT**, **visão computacional**, **inteligência artificial** e **sistemas web interativos**.
 
@@ -45,3 +45,71 @@ Pensando nisso, propusemos uma solução que une sensores ambientais, drones com
   - Dados filtráveis e relatórios automáticos.
 
 ---
+
+## 🧩 Dependências
+
+Este projeto utiliza **React Native com Expo** e as bibliotecas abaixo para garantir uma experiência rica e funcional:
+
+**🔀 Navegação:**
+- `@react-navigation/native`
+- `@react-navigation/native-stack`
+- `@react-navigation/bottom-tabs`
+- `@react-navigation/drawer`
+
+**🛠️ Utilitários para navegação:**
+- `react-native-screens`
+- `react-native-safe-area-context`
+- `react-native-gesture-handler`
+- `react-native-reanimated`
+
+**📊 Gráficos:**
+- `react-native-chart-kit`
+- `react-native-svg`
+
+**🗺️ Mapas:**
+- `react-native-maps`
+
+**🎛️ Picker (seleção de opções):**
+- `@react-native-picker/picker`
+
+**💾 Armazenamento local:**
+- `@react-native-async-storage/async-storage`
+
+> ⚠️ Algumas bibliotecas exigem instalação via `expo install` para garantir compatibilidade com o ambiente Expo.
+
+---
+
+## 🚀 Como Inicializar o Projeto
+
+Siga os passos abaixo para executar o projeto localmente:
+
+### 1. Clone o repositório:
+```bash
+git clone <url-do-repositório>
+cd <nome-do-projeto>
+```
+
+###  2. Instale as dependências:
+```bash
+npm install @react-navigation/native
+npx expo install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
+npm install @react-navigation/native-stack
+npm install @react-native-picker/picker
+npm install react-native-chart-kit
+npm install react-native-svg
+npm install @react-navigation/bottom-tabs
+npm install @react-navigation/drawer
+npm install @react-native-async-storage/async-storage
+npx expo install react-native-maps
+```
+
+### 3. Inicie o servidor de desenvolvimento:
+```bash
+npx expo start
+```
+
+### 4. Execute no dispositivo ou emulador:  
+
+📱 Escaneie o QR Code com o aplicativo **Expo Go** no seu celular;  
+
+💻 Ou selecione um emulador Android/iOS no menu web do Expo.
